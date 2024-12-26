@@ -8,7 +8,11 @@
   },
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
-  "permissions": ["storage"],
+  "permissions": ["storage", "cookies"],
+  "host_permissions": [
+    "http://localhost:3000/*",
+    "http://localhost:5001/*"
+  ],
   "icons": {
     "128": "icon-128.png"
   },
@@ -29,4 +33,6 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   }
+
+
 }
