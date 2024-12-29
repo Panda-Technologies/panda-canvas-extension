@@ -1,12 +1,14 @@
+/* eslint-disable prettier/prettier */
+
 const API_URL = 'http://localhost:5001/graphql';
 
-export async function serverLogin(email: string, password: string) {
+async function serverLogin(email, password) {
   if (!API_URL) throw new Error('API_URL is not defined');
 
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      credentials: 'same-origin',
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
       },
@@ -23,30 +25,29 @@ export async function serverLogin(email: string, password: string) {
     });
 
     const result = await response.json();
-    
     const setCookieHeader = response.headers.get("set-cookie");
     if (setCookieHeader) {
       // Extract the cookie value
       const regex = /gql-api=(s%3A[^;]+)/; // Match 'gql-api=' followed by the value starting with 's%3A' up to the semicolon
       const match = setCookieHeader.match(regex);
       if (match) {
-        const cookieName = 'gql-api';
+        const cookieName = "gql-api";
         const rawCookieValue = match[1]; // Extract the raw encoded value
 
         // Decode the cookie value
         const decodedCookieValue = decodeURIComponent(rawCookieValue);
-        console.log('Setting cookie:', cookieName, decodedCookieValue);
+        console.log("Setting cookie:", cookieName, decodedCookieValue);
 
         // Set the cookie with the fully decoded value
-        await chrome.cookies.set({
+        chrome.cookies.set({
           url: "https://uncch.instructure.com/",
           domain: ".instructure.com",
           name: cookieName,
           value: decodedCookieValue,
           httpOnly: true,
           secure: false,
-          sameSite: 'lax',
-          path: '/',
+          sameSite: "lax",
+          path: "/",
         });
       }
     }
@@ -86,3 +87,5 @@ export async function serverLogin(email: string, password: string) {
     };
   }
 }
+
+export default serverLogin;
