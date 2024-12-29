@@ -50,27 +50,13 @@
 <body>
   <div id="app">
     <h2>Login</h2>
-    <form id="loginForm" onsubmit="handleLogin(event)">
+    <form id="loginForm">
       <input type="email" id="email" placeholder="Enter your email" required />
       <input type="password" id="password" placeholder="Enter your password" required />
       <button type="submit" class="login-button">Login</button>
     </form>
   </div>
 
-  <script type="module" src="../Content/modules/utils/auth-provider.js">
-    function handleLogin(event) {
-      event.preventDefault(); // Prevent form submission
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      
-      serverLogin(email, password);
 
-      console.log('Email:', email);
-      console.log('Password:', password);
-
-      // Add additional logic here (e.g., validation, API call, etc.)
-      alert('Login button clicked!');
-    }
-  </script>
 </body>
 </html>

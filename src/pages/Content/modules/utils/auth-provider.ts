@@ -1,8 +1,17 @@
 /* eslint-disable prettier/prettier */
 
-const API_URL = 'http://localhost:5001/graphql';
+const API_URL: string = 'http://localhost:5001/graphql';
 
-async function serverLogin(email, password) {
+type LoginResponse = {
+  success: boolean;
+  redirectTo?: string;
+  error?: {
+    message: string;
+    name: string;
+  };
+};
+
+async function serverLogin(email: string, password: string): Promise<LoginResponse> {
   if (!API_URL) throw new Error('API_URL is not defined');
 
   try {
@@ -24,7 +33,11 @@ async function serverLogin(email, password) {
       }),
     });
 
-    const result = await response.json();
+    const result: {
+      data?: { login: boolean };
+      errors?: { message: string }[];
+    } = await response.json();
+
     const setCookieHeader = response.headers.get("set-cookie");
     if (setCookieHeader) {
       // Extract the cookie value
@@ -73,7 +86,7 @@ async function serverLogin(email, password) {
       success: false,
       error: {
         message: "Invalid email or password",
-        name: "Invalid credentials",
+        name: "InvalidCredentials",
       },
     };
   } catch (error) {

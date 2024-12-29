@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { OptionsDefaults } from '../Content/modules/constants';
 import Options from '../Content/modules/types/options';
 import './index.css';

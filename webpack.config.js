@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 var webpack = require('webpack'),
   path = require('path'),
   fileSystem = require('fs-extra'),
@@ -45,6 +46,7 @@ var options = (args) => {
   let opts = {
     mode: process.env.NODE_ENV || 'development',
     entry: {
+      popup: path.join(__dirname, 'src', 'pages', 'Popup', 'index.ts'),
       options: path.join(__dirname, 'src', 'pages', 'Options', 'index.ts'),
       background: path.join(
         __dirname,
