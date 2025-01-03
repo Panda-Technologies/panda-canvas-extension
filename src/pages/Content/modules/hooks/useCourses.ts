@@ -89,13 +89,7 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
         getCoursePositions(),
       ]);
 
-  const CustomCourse: Course = {
-    id: '0',
-    color: defaultColor || THEME_COLOR,
-    position: 0,
-    name: 'Custom Task',
-    course_code: 'Custom Task',
-  };
+  
 
   const courses = res
     .filter((course: Course) => !course.access_restricted_by_date)
@@ -110,7 +104,7 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
 
   if (courses.length) storeCanvasCourses(courses);
 
-  return [CustomCourse].concat(courses);
+  return courses;
 }
 
 export const makeUseCourses = (

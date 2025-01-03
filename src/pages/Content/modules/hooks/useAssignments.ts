@@ -60,7 +60,7 @@ export async function getPaginatedRequest<T>(
 }
 
 /* Get assignments from api */
-async function getAllAssignmentsRequest(
+export async function getAllAssignmentsRequest(
   start: string,
   end: string,
   allPages = true
