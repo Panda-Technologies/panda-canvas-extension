@@ -8,6 +8,7 @@ import { useCanvasCourses } from '../modules/hooks/useCourses';
 import dashCourses from '../modules/utils/dashCourses';
 import createCustomTask from '../modules/utils/createCustomTask';
 import markAssignment from '../modules/components/task-container/utils/markAssignment';
+import { sendCourses } from "../modules/hooks/sendAssignments";
 
 export const CanvasLMSConfig: LMSConfig = {
   isActive: !!isCanvas,
@@ -80,5 +81,7 @@ export function createSidebar(
 
     if (isFirefox) runAppInFirefox(outerWall);
     else runAppInChrome(outerWall);
+
+    sendCourses().then(r => console.log(r));
   }
 }
