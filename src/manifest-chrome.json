@@ -11,7 +11,11 @@
   "permissions": ["storage", "cookies"],
   "host_permissions": [
     "http://localhost:3000/*",
-    "http://localhost:5001/*"
+    "http://localhost:5001/*",
+    "https://*.instructure.com/*",
+    "https://uncch.instructure.com/*",
+    "https://uncch.instructure.com",
+    "localhost"
   ],
   "icons": {
     "128": "icon-128.png"
