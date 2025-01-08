@@ -1,11 +1,17 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import Course from '../types/course';
-import {getCourses} from './useCourses';
-import { getAllAssignmentsRequest } from './useAssignments';
-import assignment from "../icons/assignment";
-import { AssignmentType } from "../types";
+import Course from "../types/course";
+import { getCourses } from "./useCourses";
+import { getAllAssignmentsRequest, useCanvasAssignments } from "./useAssignments";
+import { AssignmentType, Options } from "../types";
+import loadGradescopeAssignments from "./utils/loadGradescope";
 
+type assignment = {
+  dueDate: string,
+  stageId: number,
+  title: string,
+  description: string
+}
 
 export async function sendCourses() {
   try {
@@ -64,6 +70,14 @@ export async function sendCourses() {
   }
 }
 
+const matchingCourse = async (course_id: string) => {
+  const courses: Course[] = await getCourses();
+  return courses.find((c: Course) => {
+    const courseId = parseInt(c.id);
+    console.log('Comparing course IDs:', courseId, course_id);
+    return courseId === parseInt(course_id);
+  });
+}
 
 async function sendAssignments(): Promise<boolean> {
   const rn = new Date();
@@ -73,8 +87,28 @@ async function sendAssignments(): Promise<boolean> {
   const endStr = en.toISOString().split('T')[0];
   console.log('Start date:', startStr);
   console.log('End date:', endStr);
+  const options: Options = {
+    GSCOPE_INT_disabled: false,
+    color_tabs: false,
+    dark_mode: false,
+    dash_courses: false,
+    due_date_headings: false,
+    rolling_period: false,
+    show_confetti: false,
+    show_locked_assignments: false,
+    show_long_overdue: false,
+    show_needs_grading: false,
+    sidebar: false,
+    start_hour: 0,
+    start_minutes: 0,
+    theme_color: "",
+    start_date: Number(startStr),
+    period: "Day"
+  }
 
   let assignments = await getAllAssignmentsRequest(startStr, endStr);
+  let gScopeAssignments = await loadGradescopeAssignments(st, en, options)
+  console.log('Gradescope assignments:', gScopeAssignments);
 
   // Fix assignment type filtering
   assignments = assignments.filter((a) => {
@@ -154,6 +188,38 @@ async function sendAssignments(): Promise<boolean> {
     }[]
   }[]);
 
+  const gScopeTasks = new Map<string, assignment[]>();
+
+  const gScopeFilter = gScopeAssignments.map(async (assignment) => {
+    console.log('Gradescope course id:', assignment.course_id);
+    const classCode = await matchingCourse(assignment.course_id)?.then(course => {
+      return course?.course_code?.split('.')[0] || '0';
+    })
+    const dueDate = assignment.due_at?.split('T')[0] || 'No due date';
+    const title = assignment.name;
+    const description = 'No description'
+    if (!gScopeTasks.has(classCode)) {
+      gScopeTasks.set(classCode, []);
+    }
+    if (!gScopeTasks.get(classCode)?.forEach((a) => a.title === title)) {
+      gScopeTasks.get(classCode)?.push({
+        dueDate,
+        stageId: 1,
+        description,
+        title
+      });
+    }
+  })
+
+  await Promise.all(gScopeFilter).then(() => {
+    task.push(...Array.from(gScopeTasks).map(([classCode, assignments]) => {
+      return {
+        classCode,
+        assignment: assignments
+      }
+    }))
+  });
+
   // Filter out any entries with invalid class codes
   const validTasks = task.filter(t => t.classCode !== '0');
 
@@ -213,10 +279,11 @@ const importCanvasClasses = async (courseInput: Array<{
     });
     const result = response as any;
 
+    await sendAssignments();
+
     if (result.errors) {
       throw new Error(result.errors[0].message);
     }
-    await sendAssignments();
 
     return result.data.importCanvasClasses;
   } catch (error) {
