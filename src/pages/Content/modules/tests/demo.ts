@@ -311,7 +311,7 @@ const DemoAssignments: PlannerAssignment[] = [
   },
 ];
 
-const DemoCourses: Course[] = [
+const DemoCourses = [
   {
     id: '1',
     color: '#8F3E97',
