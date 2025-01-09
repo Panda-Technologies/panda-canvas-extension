@@ -108,20 +108,32 @@ async function sendAssignments(): Promise<boolean> {
 
   let assignments = await getAllAssignmentsRequest(startStr, endStr);
   let gScopeAssignments = await loadGradescopeAssignments(st, en, options)
+  const submittedAssignments = new Set<string>();
   console.log('Gradescope assignments:', gScopeAssignments);
 
   // Fix assignment type filtering
   assignments = assignments.filter((a) => {
     const type = a.plannable_type as AssignmentType;
-    return type === AssignmentType.ASSIGNMENT ||
+    const submitted = () => {
+      if (a.submissions) {
+        console.log('Submission for assignment:', a.plannable.title, 'sub:', a.submissions.submitted);
+        if (a.submissions.submitted) {
+          submittedAssignments.add(a.plannable.title.toLowerCase().trim()); // Add to Set if submitted
+        }
+        return a.submissions.submitted;
+      }
+      return false;
+    }
+    return (type === AssignmentType.ASSIGNMENT ||
       type === AssignmentType.QUIZ ||
-      type === AssignmentType.GRADESCOPE;
+      type === AssignmentType.GRADESCOPE) && !submitted();
   });
 
   const courses: Course[] = await getCourses();
   console.log('Courses for assignment mapping:', courses.map(c => ({
     id: c.id,
-    code: c.course_code
+    code: c.course_code,
+    start_at: c.start_at,
   })));
 
   const task = assignments.reduce((acc, assignment) => {
@@ -140,7 +152,7 @@ async function sendAssignments(): Promise<boolean> {
     console.log('Assignment mapping:', {
       courseId: assignment.course_id,
       foundCourse: matchingCourse?.course_code,
-      title: assignment.plannable.title
+      title: assignment.plannable.title,
     });
 
     if (!matchingCourse) {
@@ -189,9 +201,26 @@ async function sendAssignments(): Promise<boolean> {
   }[]);
 
   const gScopeTasks = new Map<string, assignment[]>();
+  const gScopeTitles = new Set<string>();
 
   const gScopeFilter = gScopeAssignments.map(async (assignment) => {
     console.log('Gradescope course id:', assignment.course_id);
+
+    // Skip if title matches a submitted Canvas assignment
+    if (submittedAssignments.has(assignment.name.toLowerCase().trim())) {
+      console.log('Skipping Gradescope assignment - already submitted in Canvas:', assignment.name);
+      return;
+    }
+
+    // Skip if the Gradescope assignment is submitted
+    if (assignment.submitted) {
+      console.log('Skipping submitted Gradescope assignment:', assignment.name);
+      submittedAssignments.add(assignment.name.toLowerCase().trim()); // Add to Set
+      return;
+    }
+
+    gScopeTitles.add(assignment.name.toLowerCase().trim());
+
     const classCode = await matchingCourse(assignment.course_id)?.then(course => {
       return course?.course_code?.split('.')[0] || '0';
     })
@@ -209,19 +238,35 @@ async function sendAssignments(): Promise<boolean> {
         title
       });
     }
-  })
-
-  await Promise.all(gScopeFilter).then(() => {
-    task.push(...Array.from(gScopeTasks).map(([classCode, assignments]) => {
-      return {
-        classCode,
-        assignment: assignments
-      }
-    }))
   });
 
-  // Filter out any entries with invalid class codes
-  const validTasks = task.filter(t => t.classCode !== '0');
+  await Promise.all(gScopeFilter);
+
+  const filteredTask = task.map(t => ({
+    ...t,
+    assignment: t.assignment.filter(a => !gScopeTitles.has(a.title.toLowerCase().trim()))
+  })).filter(t => t.assignment.length > 0);
+
+  const combinedTasks = filteredTask.slice();
+
+  Array.from(gScopeTasks).forEach(([classCode, assignments]) => {
+    const existingEntry = combinedTasks.find(t => t.classCode === classCode);
+    if (existingEntry) {
+      existingEntry.assignment.push(...assignments);
+    } else {
+      combinedTasks.push({
+        classCode,
+        assignment: assignments
+      });
+    }
+  });
+
+  const validTasks = combinedTasks
+    .map(t => ({
+      ...t,
+      assignment: t.assignment.filter(a => !submittedAssignments.has(a.title.toLowerCase().trim()))
+    }))
+    .filter(t => t.classCode !== '0' && t.assignment.length > 0);
 
   console.log('Final assignment tasks:', validTasks);
 
