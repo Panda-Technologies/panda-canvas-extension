@@ -42,6 +42,46 @@ async function getCourseColors(
   return data.custom_colors;
 }
 
+const checkCourseEnded = (course: Course): boolean => {
+  const currentDate = new Date();
+  console.log(`Checking course: ${course.course_code}`);
+  console.log(`Current date: ${currentDate}`);
+
+  if (course.start_at) {
+    const startDate = new Date(course.start_at);
+    console.log(`Using start_at date: ${startDate}`);
+
+    // Calculate 16 weeks after start date
+    const semesterDuration = 16 * 7 * 24 * 60 * 60 * 1000; // 16 weeks in ms
+    const endDate = new Date(startDate.getTime() + semesterDuration);
+    console.log(`End date (16 weeks after start): ${endDate}`);
+
+    const hasEnded = currentDate > endDate;
+    console.log(`Has course ended? ${hasEnded}`);
+    return hasEnded;
+
+  } else if (course.created_at) {
+    const createdDate = new Date(course.created_at);
+    console.log(`Using created_at date: ${createdDate}`);
+
+    // First add 16 weeks
+    const semesterDuration = 16 * 7 * 24 * 60 * 60 * 1000; // 16 weeks in ms
+    const endDate = new Date(createdDate.getTime() + semesterDuration);
+    console.log(`End date after 16 weeks: ${endDate}`);
+
+    // Then add 2.5 months (75 days)
+    endDate.setDate(endDate.getDate() + 75);
+    console.log(`Final end date (16 weeks + 2.5 months after creation): ${endDate}`);
+
+    const hasEnded = currentDate > endDate;
+    console.log(`Has course ended? ${hasEnded}`);
+    return hasEnded;
+  }
+
+  console.log('No valid dates found, considering course not ended');
+  return false;
+};
+
 /* Apply user-chosen course positions. */
 function applyCoursePositions(
   courses: Course[],
@@ -92,7 +132,7 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
   
 
   const courses = res
-    .filter((course: Course) => !course.access_restricted_by_date)
+    .filter((course: Course) => (!course.access_restricted_by_date && !checkCourseEnded(course)))
     .map((course: Course) => {
       course.id = course.id.toString();
       return course;
