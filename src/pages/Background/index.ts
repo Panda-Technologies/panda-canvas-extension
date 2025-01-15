@@ -24,3 +24,88 @@ chrome.storage.onChanged.addListener(function (changes) {
     });
   }
 });
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'MAKE_CLASS_REQUEST') {
+    fetch('http://localhost:5001/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        query: `
+          mutation ImportCanvasClasses($input: importCanvasClassesInput!) {
+            importCanvasClasses(input: $input) {
+              id
+              classCode
+              color
+              sections {
+                id
+                section
+                dayOfWeek
+                startTime
+                endTime
+                professor
+              }
+            }
+          }
+        `,
+        variables: {
+          input: {
+            courseInput: request.data.courseInput
+          }
+        }
+      })
+    })
+      .then(response => response.json())
+      .then(data => sendResponse(data))
+      .catch(error => sendResponse({ errors: [{ message: error.message }] }));
+
+    return true; // Will respond asynchronously
+  }
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'MAKE_TASK_REQUEST') {
+    fetch('http://localhost:5001/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        query: `
+          mutation ImportCanvasTasks($input: importCanvasTasksInput!) {
+            importCanvasTasks(input: $input) {
+              id
+              title
+              dueDate
+              stageId
+              classCode
+              description
+              userId
+            }
+          }
+        `,
+        variables: {
+          input: {
+            taskInput: request.data.taskInput
+          }
+        }
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Task import response:', data);
+        sendResponse(data);
+      })
+      .catch(error => {
+        console.error('Task import error:', error);
+        sendResponse({ errors: [{ message: error.message }] });
+      });
+
+    return true; // Will respond asynchronously
+  }
+});
+

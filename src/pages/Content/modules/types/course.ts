@@ -6,6 +6,8 @@ interface Course {
   position: number; // via dashboard positions request
   course_code?: string;
   access_restricted_by_date?: boolean;
+  start_at?: string;
+  created_at?: string;
 }
 
 export default Course;

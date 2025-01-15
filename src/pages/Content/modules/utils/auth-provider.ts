@@ -40,6 +40,7 @@ async function serverLogin(email: string, password: string): Promise<LoginRespon
 
     const setCookieHeader = response.headers.get("set-cookie");
     if (setCookieHeader) {
+      console.log("Set-Cookie header:", setCookieHeader);
       // Extract the cookie value
       const regex = /gql-api=(s%3A[^;]+)/; // Match 'gql-api=' followed by the value starting with 's%3A' up to the semicolon
       const match = setCookieHeader.match(regex);
@@ -52,7 +53,7 @@ async function serverLogin(email: string, password: string): Promise<LoginRespon
         console.log("Setting cookie:", cookieName, decodedCookieValue);
 
         // Set the cookie with the fully decoded value
-        chrome.cookies.set({
+        await chrome.cookies.set({
           url: "https://uncch.instructure.com/",
           domain: ".instructure.com",
           name: cookieName,
@@ -64,6 +65,8 @@ async function serverLogin(email: string, password: string): Promise<LoginRespon
         });
       }
     }
+
+    console.log("Cookie:" + await chrome.cookies.get({ url: "https://uncch.instructure.com/", name: "gql-api" }));
 
     if (result.errors) {
       return {
