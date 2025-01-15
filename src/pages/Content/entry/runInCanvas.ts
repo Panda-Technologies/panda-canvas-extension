@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import runApp from '../modules';
 import { getOptions } from '../modules/hooks/useOptions';
 import { Options } from '../modules/types';

@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
@@ -13,13 +15,11 @@ export default function runApp(
   lms: LMSConfig,
   data: Options
 ): void {
-  ReactDOM.render(
-    <React.StrictMode>
-      <App lms={lms} options={data} />
-    </React.StrictMode>,
-    container
-  );
-  console.log(
-    'Tasks for Canvas: Check out the repo! https://github.com/jtcheng26/canvas-task-extension'
-  );
+  // ReactDOM.render(
+  //   <React.StrictMode>
+  //     <App lms={lms} options={data} />
+  //   </React.StrictMode>,
+  //   container
+  // );
+  
 }
