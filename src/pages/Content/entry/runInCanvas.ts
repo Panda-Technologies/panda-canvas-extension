@@ -9,7 +9,6 @@ import { useCanvasCourses } from '../modules/hooks/useCourses';
 import dashCourses from '../modules/utils/dashCourses';
 import createCustomTask from '../modules/utils/createCustomTask';
 import markAssignment from '../modules/components/task-container/utils/markAssignment';
-import { sendCourses } from "../modules/hooks/sendAssignments";
 
 export const CanvasLMSConfig: LMSConfig = {
   isActive: !!isCanvas,
@@ -33,7 +32,7 @@ function runAppUsingOptions(container: HTMLElement, data: Options) {
     */
   const newContainer = document.createElement('div');
   newContainer.id = 'tfc-wall-rose';
-  (container.parentNode as Node).insertBefore(newContainer, container);
+  //(container.parentNode as Node).insertBefore(newContainer, container);
   /*
       only visually hide sidebar to prevent issues with DOM modification
     */
@@ -82,7 +81,5 @@ export function createSidebar(
 
     if (isFirefox) runAppInFirefox(outerWall);
     else runAppInChrome(outerWall);
-
-    sendCourses().then(r => console.log(r));
   }
 }

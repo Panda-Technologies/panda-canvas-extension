@@ -17,7 +17,7 @@ if (isCanvas) {
   mutation observer waits for sidebar to load then injects content
   */
 
-  console.log('Tasks for Canvas: Canvas detected');
+  console.log('Panda: Canvas detected');
 
   CanvasEntryPoint();
 
@@ -28,7 +28,7 @@ if (isCanvas) {
     InstallSettingsEntryPoint();
   }
 } else if (isGradescope) {
-  console.log('Tasks for Canvas: Gradescope detected');
+  console.log('Panda: Gradescope detected');
 
   GradescopeEntryPoint();
 }

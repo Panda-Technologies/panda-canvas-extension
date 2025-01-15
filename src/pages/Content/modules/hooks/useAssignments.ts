@@ -165,7 +165,7 @@ export function convertPlannerAssignments(
       // custom task with details
       if (
         parsed.length >= 2 &&
-        parsed[0].trim() === 'Created using Tasks for Canvas'
+        parsed[0].trim() === 'Created using Panda'
       ) {
         if (parsed[1].trim() === 'Instructor Note') {
           converted.needs_grading_count = 1;

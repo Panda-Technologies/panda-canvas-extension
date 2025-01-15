@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import runGradescope from '../../modules/components/gradescope';
 import migrateGradescopeToLocal from '../../modules/components/gradescope/utils/migrate';
 import {

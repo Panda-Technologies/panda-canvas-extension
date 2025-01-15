@@ -76,7 +76,7 @@ export default function CoursePopup({
   }
   const headerText = synced ? 'Unsync Course' : 'Link to Canvas Course';
   const descText = synced
-    ? 'Gradescope assignments for this course will be removed from Tasks for Canvas. They will return if you choose to sync again later.'
+    ? 'Gradescope assignments for this course will be removed from Panda. They will return if you choose to sync again later.'
     : 'Gradescope tasks for this course will fall under your selected Canvas course.';
   const strongText = synced
     ? ''

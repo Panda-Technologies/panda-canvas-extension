@@ -3,7 +3,7 @@ import { AssignmentStatus } from '../../../types/assignment';
 import { GradescopeOverride, GradescopeTask } from '../types';
 import { getSyncedCourses, unsyncCourse } from './scrape';
 
-// for use by Tasks for Canvas
+// for use by Panda
 export async function storeCanvasCourses(courses: Course[]) {
   chrome.storage.local.set({
     GSCOPE_INT_canvas_courses: courses.reduce((sum, c) => {

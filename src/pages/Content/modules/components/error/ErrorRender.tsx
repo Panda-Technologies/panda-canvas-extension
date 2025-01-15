@@ -19,7 +19,7 @@ const SupportLink = styled.a`
 export default function ErrorRender({
   error,
 }: Partial<FallbackProps>): JSX.Element {
-  const failureTitle = 'Tasks for Canvas failed to load.';
+  const failureTitle = 'Panda failed to load.';
   const failureMessage =
     'Sorry about that! If this keeps happening, please submit a support request and include the following error message:';
   const supportText = 'Support Link';

@@ -25,7 +25,4 @@ export default function runGradescope(
     </React.StrictMode>,
     container
   );
-  console.log(
-    'Tasks for Canvas: Check out the repo! https://github.com/jtcheng26/canvas-task-extension'
-  );
 }

@@ -14,7 +14,7 @@ export default async function createCustomTask(
       title: title,
       todo_date: date,
       details:
-        'Created using Tasks for Canvas\n' +
+        'Created using Panda\n' +
         (grading ? 'Instructor Note\n' : 'Custom Task\n'),
     };
 

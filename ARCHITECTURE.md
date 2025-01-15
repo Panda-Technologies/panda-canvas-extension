@@ -1,13 +1,13 @@
 # Architecture
 
-This document describes the high-level architecture of Tasks for Canvas.
+This document describes the high-level architecture of Panda.
 If you want to familiarize yourself with the code base, you are just in the right place!
 
 Template borrowed from [rust-analyzer](https://github.com/rust-lang/rust-analyzer/blob/d7c99931d05e3723d878bea5dc26766791fa4e69/docs/dev/architecture.md)
 
 ## Bird's Eye View
 
-On the highest level, Tasks for Canvas is a browser extension that runs primarily through a [content script](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts) where code will run in the user's Canvas website, make [API requests](https://canvas.instructure.com/doc/api/live) on behalf of the user, and display that data in a more convenient to-do list UI.
+On the highest level, Panda is a browser extension that runs primarily through a [content script](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts) where code will run in the user's Canvas website, make [API requests](https://canvas.instructure.com/doc/api/live) on behalf of the user, and display that data in a more convenient to-do list UI.
 
 More specifically, the extension:
 

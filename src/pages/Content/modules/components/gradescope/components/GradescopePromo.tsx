@@ -42,12 +42,12 @@ type Props = {
 };
 
 export default function GradescopePromo({ onSubmit, onExit }: Props) {
-  const headerText = 'Sync Gradescope with Tasks for Canvas';
+  const headerText = 'Sync Gradescope with Panda';
 
   const bodyText = (
     <>
-      Click <strong>“Sync with Tasks for Canvas”</strong> to automatically add
-      this course’s Gradescope assignments to Tasks for Canvas.{' '}
+      Click <strong>“Sync with Panda”</strong> to automatically add
+      this course’s Gradescope assignments to Panda.{' '}
       <strong>This must be done separately for each course</strong> you want to
       sync. Assignments will be updated whenever you visit Gradescope (to submit
       an assignment, for example).
@@ -55,7 +55,7 @@ export default function GradescopePromo({ onSubmit, onExit }: Props) {
   );
 
   const fineText =
-    'This is a feature from the Tasks for Canvas browser extension. Select Disable to opt out for this course. You can disable this feature entirely in the extension settings.';
+    'This is a feature from the Panda browser extension. Select Disable to opt out for this course. You can disable this feature entirely in the extension settings.';
   return (
     <PromoWrapper>
       <HeaderText>
@@ -66,7 +66,7 @@ export default function GradescopePromo({ onSubmit, onExit }: Props) {
       <FineText>{fineText}</FineText>
       <ButtonGroup left>
         <GradescopeButton
-          label="Sync with Tasks for Canvas"
+          label="Sync with Panda"
           mode="primary"
           onClick={onSubmit}
         />{' '}

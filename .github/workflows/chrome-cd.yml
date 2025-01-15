@@ -41,12 +41,12 @@ jobs:
           # Optional (recommended) mail server password:
           password: ${{secrets.MAIL_PASSWORD}}
           # Required mail subject:
-          subject: New Tasks for Canvas Upload Success
+          subject: New Panda Upload Success
           body: CI/CD pipeline succeeded. Awaiting publishing.
           # Required recipients' addresses:
           to: jtchengdev@gmail.com
           # Required sender full name (address can be skipped):
-          from: Tasks for Canvas CI/CD # <user@example.com>
+          from: Panda CI/CD # <user@example.com>
           # Optional whether this connection use TLS (default is true if server_port is 465)
           secure: true
           # Optional attachments:

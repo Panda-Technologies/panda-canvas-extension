@@ -15,11 +15,11 @@ export default function runApp(
   lms: LMSConfig,
   data: Options
 ): void {
-  // ReactDOM.render(
-  //   <React.StrictMode>
-  //     <App lms={lms} options={data} />
-  //   </React.StrictMode>,
-  //   container
-  // );
+  ReactDOM.render(
+    <React.StrictMode>
+      <App lms={lms} options={data} />
+    </React.StrictMode>,
+    container
+  );
   
 }
